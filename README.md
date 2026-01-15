@@ -52,9 +52,9 @@ graph TD
     Cloud -->|Metadata| Firestore[Firestore]
     Cloud -->|Images| Storage[Storage]
   end
-
-
-🌟 Key Features
+```
+---
+## 🌟 Key Features
 🧠 Edge Intelligence (Raspberry Pi)
 
 Instance Segmentation: Uses YOLOv8n-seg to detect pothole boundaries and estimate severity based on pixel area1
@@ -85,15 +85,15 @@ Real-time Alerts: WebSocket notifications on pothole detection8
 
 ⚙ Hardware Requirements
 
-Based on the Bill of Materials9
-:
+Based on the Bill of Materials:
+| Component | Specification | Function |
+| :--- | :--- | :--- |
+| **SBC** | Raspberry Pi 4 Model B (4GB) | Main processing unit |
+| **Camera** | Pi Camera Module v3 | Image acquisition (CSI) |
+| **GNSS** | ATGM336H (GPS+BDS) | Geospatial localization (UART) |
+| **Storage** | MicroSD Card (64GB Class 10) | OS and local dataset storage |
+| **Power** | 5V/3A Power Supply | Stable power for Pi & peripherals |
 
-Component	Specification	Function
-SBC	Raspberry Pi 4 Model B (4GB)	Main processing unit
-Camera	Pi Camera Module v3	Image acquisition (CSI)
-GNSS	ATGM336H (GPS+BDS)	Geospatial localization (UART)
-Storage	MicroSD Card (64GB Class 10)	OS and local dataset storage
-Power	5V/3A Power Supply	Stable power for Pi & peripherals
 💻 Tech Stack
 
 Edge (Raspberry Pi):
@@ -120,37 +120,35 @@ Firebase Firestore (metadata)
 
 Firebase Storage (evidence images)
 
-📂 Directory Structure
+## 📂 Directory Structure
+```text
 MotoVision-Project/
-├── android_app/               # Android Studio Project
+├── android_app/                # Android Studio Project
 │   ├── app/
-│   │   ├── src/               # Java/Kotlin source
-│   │   └── google-services.json # (Ignored) Firebase Config
-│   ├── local.properties       # (Ignored) Contains MAPS_API_KEY
-│   └── build.gradle.kts
-│
-├── raspberry_pi/              # Edge Device Code
-│   ├── ncnn_model/            # Quantized YOLOv8 models
-│   ├── main_app_updated.py    # Main script
-│   ├── sort.py                # Tracking algorithm
-│   ├── serviceAccountKey.json # (Ignored) Firebase Admin Key
-│   └── requirements.txt       # Python dependencies
-│
-└── docs/                      # Documentation & Report
-
+│   │   ├── src/                # Java/Kotlin source code
+│   │   └── google-services.json # (Ignored) Firebase Configuration
+│   ├── local.properties        # (Ignored) Maps API Key
+│   └── build.gradle.kts        # Build configuration
+├── raspberry_pi/               # Edge Device Source Code
+│   ├── ncnn_model/             # Quantized YOLOv8 models
+│   ├── main_app_updated.py     # Main execution script
+│   ├── sort.py                 # Tracking algorithm
+│   ├── serviceAccountKey.json  # (Ignored) Firebase Admin Key
+│   └── requirements.txt        # Python dependencies
+└── docs/                       # Documentation & Project Reports
+```
 🚀 Installation & Setup
-Part 1: Raspberry Pi (Edge)
-
-Clone repository:
-
+### Part 1: Raspberry Pi (Edge)
+1. **Clone repository:**
+\`\`\`bash
 git clone https://github.com/tranngocanhtoan-afk/MotoVision.git
 cd MotoVision/raspberry_pi
+\`\`\`
 
-
-Install dependencies:
-
+2. **Install dependencies:**
+\`\`\`bash
 pip install -r requirements.txt
-
+\`\`\`
 
 Requires opencv-python, ncnn, pyserial, firebase-admin
 
