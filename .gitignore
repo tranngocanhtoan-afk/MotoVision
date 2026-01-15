@@ -1,0 +1,41 @@
+# --- HỆ THỐNG (SYSTEM) ---
+.DS_Store
+Thumbs.db
+*.log
+
+# --- ANDROID STUDIO (App Mobile) ---
+# Chặn các file build tạm và file cấu hình IDE
+android_app/.gradle/
+android_app/build/
+android_app/app/build/
+android_app/.idea/
+android_app/*.iml
+android_app/captures/
+
+# !!! QUAN TRỌNG: CHẶN API KEY & GOOGLE SERVICES !!!
+android_app/local.properties
+android_app/app/google-services.json
+
+# --- RASPBERRY PI / PYTHON (Code IoT) ---
+# Chặn file biên dịch Python và môi trường ảo
+raspberry_pi/__pycache__/
+raspberry_pi/*.py[cod]
+raspberry_pi/venv/
+raspberry_pi/.env
+
+# !!! QUAN TRỌNG: CHẶN KEY FIREBASE ADMIN & DATABASE !!!
+raspberry_pi/serviceAccountKey.json
+raspberry_pi/potholes.db
+raspberry_pi/potholes.db-shm
+raspberry_pi/potholes.db-wal
+
+# --- DỮ LIỆU RÁC & DATASET NẶNG ---
+# (Dựa trên hình ảnh folder cũ của bạn)
+raspberry_pi/Pothole_Images/
+raspberry_pi/collect dataset/
+raspberry_pi/data/
+raspberry_pi/images/
+raspberry_pi/run_on_pi/
+
+# --- FILE DOC (Giữ lại PDF báo cáo, nhưng chặn file tạm của Word/Office) ---
+~$*.doc*

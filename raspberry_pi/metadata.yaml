@@ -1,0 +1,18 @@
+description: Ultralytics best model trained on /content/distilled_data_fixed/data.yaml
+author: Ultralytics
+date: '2025-12-25T20:42:28.748235'
+version: 8.3.241
+license: AGPL-3.0 License (https://ultralytics.com/license)
+docs: https://docs.ultralytics.com
+stride: 32
+task: detect
+batch: 1
+imgsz:
+- 640
+- 640
+names:
+  0: pothole
+args:
+  batch: 1
+  half: false
+channels: 3

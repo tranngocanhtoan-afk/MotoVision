@@ -1,0 +1,19 @@
+# Xử lý ảnh & AI
+opencv-python
+numpy
+ncnn
+
+# Giao tiếp phần cứng & GPS
+pyserial
+pynmea2
+
+# Server & Network
+Flask
+websockets
+requests
+
+# Database & Cloud
+firebase-admin
+
+# Tiện ích hệ thống
+psutil
