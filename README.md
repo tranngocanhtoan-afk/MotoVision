@@ -1,4 +1,4 @@
-# 🏍️ MotoVision: Edge-based Pothole Detection & Reporting System
+# MotoVision: Edge-based Pothole Detection & Reporting System
 
 MotoVision is an end-to-end AIoT solution designed to detect potholes in real-time, log their geospatial location, and facilitate community-driven road maintenance reporting[^1].
 
@@ -6,86 +6,63 @@ Using a lightweight Instance Segmentation model running on the edge (Raspberry P
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [🔭 Overview](#-overview)
-- [🏗 System Architecture](#-system-architecture)
-- [🌟 Key Features](#-key-features)
-- [⚙ Hardware Requirements](#-hardware-requirements)
-- [💻 Tech Stack](#-tech-stack)
-- [📂 Directory Structure](#-directory-structure)
-- [🚀 Installation & Setup](#-installation--setup)
-- [📊 Results & Performance](#-results--performance)
-- [👥 Team & Acknowledgments](#-team--acknowledgments)
-
----
-
-## 🔭 Overview
-
-Road maintenance in developing countries often suffers from delayed reporting and manual inspection costs[^2]. MotoVision solves this by automating the detection process.
-
-The system captures road imagery, processes it locally using **YOLOv8n-seg optimized with NCNN**, coordinates with **GNSS** for precise location, and allows users to verify and upload incidents via a mobile app[^3].
+- [Overview](#-overview)
+- [System Architecture](#-system-architecture)
+- [Key Features](#-key-features)
+- [Hardware Requirements](#-hardware-requirements)
+- [Tech Stack](#-tech-stack)
+- [Directory Structure](#-directory-structure)
+- [Installation & Setup](#-installation--setup)
+- [Results & Performance](#-results--performance)
+- [Team & Acknowledgments](#-team--acknowledgments)
 
 ---
 
-## 🏗 System Architecture
+## Overview
 
-The project follows a decoupled **Edge–Mobile–Cloud** architecture[^4]:
+Road maintenance in developing countries often suffers from delayed reporting and high manual inspection costs. **MotoVision** addresses this challenge by implementing an end-to-end AIoT solution that:
 
-```mermaid
-graph TD
-  subgraph "Layer 1: Edge Node (Raspberry Pi)"
-    Cam[Pi Camera v3] -->|Frames| AI[NCNN Inference Engine]
-    GPS[GNSS ATGM336H] -->|NMEA Data| Kalman[Kalman Filter]
-    AI -->|Best Shot Selection| Buffer[Event Buffer]
-    Kalman -->|Sync Location| Buffer
-    Buffer -->|MJPEG Stream| Wifi[WebSocket/HTTP]
-  end
+1.  **Real-time Edge Detection:** Leverages a lightweight **YOLOv8n-seg model optimized with NCNN** running directly on a Raspberry Pi to identify road damages and segment pothole boundaries instantly without cloud dependency.
+2.  **Precise Geospatial Localization:** Integrates **GNSS data with Kalman Filter** smoothing to accurately synchronize detected incidents with their real-world coordinates, ensuring reliable mapping even at varying speeds.
+3.  **Human-in-the-Loop Verification:** Connects to a companion **Android Application** that allows users to review, verify, or discard detections before uploading, significantly reducing false positive rates.
+4.  **Community-Driven Reporting:** Facilitates a seamless data pipeline where verified road damage data is synced to the cloud, creating a crowdsourced database for efficient infrastructure maintenance.
 
-  subgraph "Layer 2: Mobile App (Android)"
-    Wifi <-->|Stream & Alerts| App[MotoVision App]
-    App -->|Verify & Upload| Cloud[Firebase]
-    Map[Google Maps SDK] -.->|Overlay| App
-  end
+The system workflow is divided into two primary stages:
 
-  subgraph "Layer 3: Cloud (Firebase)"
-    Cloud -->|Metadata| Firestore[Firestore]
-    Cloud -->|Images| Storage[Storage]
-  end
-```
+* **Edge Processing (On-Device):** Captures video frames, performs instance segmentation, and filters "Best Shot" evidence locally.
+* **Mobile Coordination (User Interaction):** Receives alerts via WebSocket, displays live tracking overlays, and handles the final data transmission to Firebase.
+
 ---
-## 🌟 Key Features
-🧠 Edge Intelligence (Raspberry Pi)
 
-Instance Segmentation: Uses YOLOv8n-seg to detect pothole boundaries and estimate severity based on pixel area1
-.
+## System Architecture
 
-NCNN Optimization: Optimized for ARM CPUs, achieving functional framerates without a discrete GPU2
-.
+The project follows a decoupled **Edge–Mobile–Cloud** architecture:
 
-Smart Tracking (SORT): Prevents duplicate logs for the same pothole using IoU-based tracking3
-.
+![system architecture](https://github.com/user-attachments/assets/2cde1def-b662-4e52-acdb-dd479d867d5c)
 
-"Best Shot" Logic: Automatically selects the clearest, centered frame of a pothole to save as evidence4
-.
+---
+## Key Features
 
-GNSS Smoothing: Implements Kalman Filter + interpolation to sync 30fps video with 1Hz GPS data5
-.
+### Edge Intelligence (Raspberry Pi)
 
-📱 Mobile Application (Android)
+* **Instance Segmentation:** Uses **YOLOv8n-seg** to detect pothole boundaries and estimate severity based on pixel area.
+* **NCNN Optimization:** Optimized for ARM CPUs, achieving functional framerates without a discrete GPU.
+* **Smart Tracking (SORT):** Prevents duplicate logs for the same pothole using IoU-based tracking.
+* **"Best Shot" Logic:** Automatically selects the clearest, centered frame of a pothole to save as evidence.
+* **GNSS Smoothing:** Implements **Kalman Filter** + interpolation to sync 30fps video with 1Hz GPS data.
 
-Split-Screen Interface: Live MJPEG stream (top) + Google Maps navigation (bottom)6
-.
+### Mobile Application (Android)
 
-Human-in-the-loop Verification: User confirms detections before upload to reduce false positives7
-.
+* **Split-Screen Interface:** Live MJPEG stream (top) + Google Maps navigation (bottom).
+* **Human-in-the-loop Verification:** User confirms detections before upload to reduce false positives.
+* **Real-time Alerts:** WebSocket notifications on pothole detection.
 
-Real-time Alerts: WebSocket notifications on pothole detection8
-.
-
-⚙ Hardware Requirements
+### Hardware Requirements
 
 Based on the Bill of Materials:
+
 | Component | Specification | Function |
 | :--- | :--- | :--- |
 | **SBC** | Raspberry Pi 4 Model B (4GB) | Main processing unit |
@@ -94,31 +71,21 @@ Based on the Bill of Materials:
 | **Storage** | MicroSD Card (64GB Class 10) | OS and local dataset storage |
 | **Power** | 5V/3A Power Supply | Stable power for Pi & peripherals |
 
-💻 Tech Stack
+## Tech Stack
+### Edge (Raspberry Pi)
+* **Python 3.9+**
+* **NCNN (Tencent)**
+* **OpenCV**
+* **SQLite** (local logging)
 
-Edge (Raspberry Pi):
+### Mobile (Android)
+* **Kotlin / Java**
+* **Google Maps SDK**
+* **MPAndroidChart** (optional)
 
-Python 3.9+
-
-NCNN (Tencent)
-
-OpenCV
-
-SQLite (local logging)10
-
-Mobile (Android):
-
-Kotlin / Java
-
-Google Maps SDK
-
-MPAndroidChart (optional)
-
-Cloud:
-
-Firebase Firestore (metadata)
-
-Firebase Storage (evidence images)
+### Cloud (Firebase)
+* **Firebase Firestore** (metadata)
+* **Firebase Storage** (evidence images)
 
 ## 📂 Directory Structure
 ```text
@@ -137,70 +104,73 @@ MotoVision-Project/
 │   └── requirements.txt        # Python dependencies
 └── docs/                       # Documentation & Project Reports
 ```
-🚀 Installation & Setup
+## Installation & Setup
+
 ### Part 1: Raspberry Pi (Edge)
+
 1. **Clone repository:**
-\`\`\`bash
-git clone https://github.com/tranngocanhtoan-afk/MotoVision.git
-cd MotoVision/raspberry_pi
-\`\`\`
+   ```bash
+   git clone [https://github.com/tranngocanhtoan-afk/MotoVision.git](https://github.com/tranngocanhtoan-afk/MotoVision.git)
+   cd MotoVision/raspberry_pi
+   ```
+
 
 2. **Install dependencies:**
-\`\`\`bash
-pip install -r requirements.txt
-\`\`\`
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Requires opencv-python, ncnn, pyserial, firebase-admin
-
-Setup secrets:
-
+**Requires:**
+```bash
+opencv-python, ncnn, pyserial, firebase-admin
+```
+**Setup secrets:**
+```bash
 Put serviceAccountKey.json inside raspberry_pi/ (git-ignored).
-
-Run:
-
+```
+**Run:**
+```bash
 python main_app_updated.py
+```
 
-Part 2: Android App
+### Part 2: Android App
 
-Open android_app/ in Android Studio
-
-Create local.properties:
-
+**Open**
+```bash
+android_app/ in Android Studio
+```
+**Create**
+```bash
+local.properties:
+```
+```bash
 MAPS_API_KEY=AIzaSyDxxxxxxxxx_Your_Key
-
-
-Download google-services.json from Firebase Console and place it in android_app/app/
-
+```
+**Download** 
+```bash
+google-services.json from Firebase Console and place it in android_app/app/
+```
+```bash
 Build & Run
+```
+## Results & Performance
 
-📊 Results & Performance
+* **Dataset:** Trained on **2,254 images** (augmented) collected from Vietnamese roads.
+* **Accuracy:** mAP@50 (Mask) = **0.726**, outperforming bbox-only approaches.
+* **Speed:** ~4 FPS on Raspberry Pi 4 CPU using **NCNN**. The buffering "Best Shot" logic helps avoid missing critical events at city speeds.
 
-Dataset: Trained on 2,254 images (augmented) collected from Vietnamese roads11
-.
+---
 
-Accuracy: mAP@50 (Mask) = 0.726, outperforming bbox-only approaches12
-.
+## Team & Acknowledgments
 
-Speed: ~4 FPS on Raspberry Pi 4 CPU using NCNN13
-. The buffering "Best Shot" logic helps avoid missing critical events at city speeds14
-.
+* **Project Course:** MotoVision - Vietnamese-German University (VGU)
+* **Instructor:** Dr. Vo Bich Hien
 
-👥 Team & Acknowledgments
+### Student Team
+* **Nguyen Gia Thong** (10422117)
+* **Le Ba Thai Quan** (10421102)
+* **Tran Ngoc Anh Toan** (10422118)
 
-Project Course: MotoVision - Vietnamese-German University (VGU)15
-
-Instructor: Dr. Vo Bich Hien16
-
-Student Team:
-
-Nguyen Gia Thong (10422117)
-
-Le Ba Thai Quan (10421102)
-
-Tran Ngoc Anh Toan (10422118)
-
-References:
-
-YOLOv8 by Ultralytics
-
-NCNN by Tencent
+### References
+* **YOLOv8** by Ultralytics
+* **NCNN** by Tencent
