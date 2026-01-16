@@ -1,6 +1,6 @@
 # MotoVision: Edge-based Pothole Detection & Reporting System
 
-MotoVision is an end-to-end AIoT solution designed to detect potholes in real-time, log their geospatial location, and facilitate community-driven road maintenance reporting[^1].
+MotoVision is an end-to-end AIoT solution designed to detect potholes in real-time, log their geospatial location, and facilitate community-driven road maintenance reporting.
 
 Using a lightweight Instance Segmentation model running on the edge (Raspberry Pi), the system identifies road damages and syncs verified data to the cloud via a companion Android Application.
 
